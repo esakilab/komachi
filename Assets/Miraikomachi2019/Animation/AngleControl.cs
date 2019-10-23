@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
- 
- 
-public class AngleControl : MonoBehaviour
-{
- 
+
+public class AngleControl : MonoBehaviour {
+
     Slider angleSlider;
     GameObject mirai;
     Animator miraiAnimator;
     HumanPose miraiPose;
     HumanPoseHandler handler;
-    enum Muscles : int
-    {
+    enum Muscles : int {
         SpineFrontBack,
         SpineLeftRight,
         SpineTwistLeftRight,
@@ -110,68 +107,33 @@ public class AngleControl : MonoBehaviour
         RightLittle2Stretched,
         RightLittle3Stretched
     }
- 
+    public float maxValue = 10f;
+    public float minValue = 0f;
+
     // Use this for initialization
-    void Start()
-    {
- 
-        angleSlider = GetComponent<Slider>();
- 
-        const float maxValue = 20f;
-        const float minValue = 0f;
-        float value = 10f;
+    void Start () {
+
+        angleSlider = GetComponent<Slider> ();
+
+        float value = 0f;
 
         angleSlider.maxValue = maxValue;
         angleSlider.minValue = minValue;
         angleSlider.value = value;
 
-        mirai = GameObject.Find("mirai2019_dance");
-        miraiAnimator = mirai.GetComponent<Animator>();
-        handler = new HumanPoseHandler(miraiAnimator.avatar, miraiAnimator.transform);
-        handler.GetHumanPose(ref miraiPose);
-        miraiPose.muscles[9] = -20f;
-        handler.SetHumanPose(ref miraiPose);
     }
-
-    void musclesStatus() {
-        handler.GetHumanPose(ref miraiPose);
-		string[] muscleName = HumanTrait.MuscleName;
-		int i = 0;
-		while (i < HumanTrait.MuscleCount)
-		{
-            switch (i)
-            {
-                //case (int)Muscles.LeftArmDownUp:
-                //case (int)Muscles.LeftArmTwistInOut:
-                //case (int)Muscles.LeftForearmStretch:
-                //case (int)Muscles.LeftLowerLegStretch:
-                case (int)Muscles.LeftUpperLegFrontBack:
-                //case (int)Muscles.RightArmDownUp:
-                //case (int)Muscles.RightArmTwistInOut:
-                //case (int)Muscles.RightForearmStretch:
-                //case (int)Muscles.RightLowerLegStretch:
-                //case (int)Muscles.RightUpperLegFrontBack:
-                //case (int)Muscles.SpineFrontBack:
-			        Debug.Log(i + ":" + muscleName[i] + ":" + miraiPose.muscles[i]);
-                    break;
-            }
-            i++;
-		}
-	}
 
     // Update is called once per frame
-    void Update()
-    {
-        musclesStatus();
-        for (int i=0;i<miraiPose.muscles.Length;i++){
-            miraiPose.muscles[i]=0;
-        }
-        handler.SetHumanPose(ref miraiPose);
+    void Update () { }
+
+    public void onValueChanged () {
+        // ref -> https://squmarigames.com/2018/12/16/unity-beginner-slider/
+        Debug.Log ("現在値：" + angleSlider.value);
     }
 
-    public void MoveSlider(){
-		Debug.Log("Moving");
-	}
- 
- 
+    // Sliderの値を渡す
+    public float getAngleSliderValue () {
+        return angleSlider.value;
+    }
+
 }

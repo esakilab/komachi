@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
- 
- 
-public class Komachi_bow : MonoBehaviour
-{
- 
-    GameObject mirai;
+
+public class Komachi_bow : MonoBehaviour {
+    GameObject mirai, angleSlider;
     Animator miraiAnimator;
     HumanPose miraiPose;
     HumanPoseHandler handler;
-    enum Muscles : int
-    {
+    AngleControl angleControlScript;
+    enum Muscles : int {
         SpineFrontBack,
         SpineLeftRight,
         SpineTwistLeftRight,
@@ -109,58 +106,81 @@ public class Komachi_bow : MonoBehaviour
         RightLittle2Stretched,
         RightLittle3Stretched
     }
- 
-    // Use this for initialization
-    void Start()
-    {
 
-        mirai = GameObject.Find("mirai2019_dance");
-        miraiAnimator = mirai.GetComponent<Animator>();
-        handler = new HumanPoseHandler(miraiAnimator.avatar, miraiAnimator.transform);
-        handler.GetHumanPose(ref miraiPose);
-        miraiPose.muscles[9] = -20f;
-        handler.SetHumanPose(ref miraiPose);
+    // Use this for initialization
+    void Start () {
+
+        mirai = GameObject.Find ("mirai2019_dance");
+        miraiAnimator = mirai.GetComponent<Animator> ();
+        handler = new HumanPoseHandler (miraiAnimator.avatar, miraiAnimator.transform);
+        handler.GetHumanPose (ref miraiPose);
+        initUpRightPose ();
+
+        angleSlider = GameObject.Find ("Slider");
+        angleControlScript = angleSlider.GetComponent<AngleControl> ();
     }
 
-    void musclesStatus() {
-        handler.GetHumanPose(ref miraiPose);
-		string[] muscleName = HumanTrait.MuscleName;
-		int i = 0;
-		while (i < HumanTrait.MuscleCount)
-		{
-            switch (i)
-            {
+    // Update is called once per frame
+    void Update () {
+        // musclesStatus ();
+        getSliderValue ();
+        handler.SetHumanPose (ref miraiPose);
+    }
+
+    // 直立のポーズに初期化
+    private void initUpRightPose () {
+        miraiPose.muscles[(int) Muscles.LeftArmDownUp] = -0.6f;
+        miraiPose.muscles[(int) Muscles.LeftArmTwistInOut] = 0.15f;
+        miraiPose.muscles[(int) Muscles.LeftForearmStretch] = 1f;
+        miraiPose.muscles[(int) Muscles.LeftLowerLegStretch] = 0.88f;
+        miraiPose.muscles[(int) Muscles.LeftUpperLegFrontBack] = 0.5f;
+        miraiPose.muscles[(int) Muscles.RightArmDownUp] = -0.6f;
+        miraiPose.muscles[(int) Muscles.RightArmTwistInOut] = 0.15f;
+        miraiPose.muscles[(int) Muscles.RightForearmStretch] = 1f;
+        miraiPose.muscles[(int) Muscles.RightLowerLegStretch] = 0.88f;
+        miraiPose.muscles[(int) Muscles.RightUpperLegFrontBack] = 0.5f;
+        miraiPose.muscles[(int) Muscles.SpineFrontBack] = 0f;
+        // TODO: Root T および Root Q.x の初期化
+        handler.SetHumanPose (ref miraiPose);
+    }
+
+    private void musclesStatus () {
+        string[] muscleName = HumanTrait.MuscleName;
+        int i = 0;
+        while (i < HumanTrait.MuscleCount) {
+            switch (i) {
                 //case (int)Muscles.LeftArmDownUp:
                 //case (int)Muscles.LeftArmTwistInOut:
                 //case (int)Muscles.LeftForearmStretch:
                 //case (int)Muscles.LeftLowerLegStretch:
-                case (int)Muscles.LeftUpperLegFrontBack:
-                //case (int)Muscles.RightArmDownUp:
-                //case (int)Muscles.RightArmTwistInOut:
-                //case (int)Muscles.RightForearmStretch:
-                //case (int)Muscles.RightLowerLegStretch:
-                //case (int)Muscles.RightUpperLegFrontBack:
-                //case (int)Muscles.SpineFrontBack:
-			        Debug.Log(i + ":" + muscleName[i] + ":" + miraiPose.muscles[i]);
+                case (int) Muscles.LeftUpperLegFrontBack:
+                    //case (int)Muscles.RightArmDownUp:
+                    //case (int)Muscles.RightArmTwistInOut:
+                    //case (int)Muscles.RightForearmStretch:
+                    //case (int)Muscles.RightLowerLegStretch:
+                    //case (int)Muscles.RightUpperLegFrontBack:
+                    //case (int)Muscles.SpineFrontBack:
+                    Debug.Log (i + ":" + muscleName[i] + ":" + miraiPose.muscles[i]);
                     break;
             }
             i++;
-		}
-	}
-
-    // Update is called once per frame
-    void Update()
-    {
-        musclesStatus();
-        for (int i=0;i<miraiPose.muscles.Length;i++){
-            miraiPose.muscles[i]=0;
         }
-        handler.SetHumanPose(ref miraiPose);
     }
 
-    public void MoveSlider(){
-		Debug.Log("Moving");
-	}
- 
- 
+    private void getSliderValue () {
+        float maxValue = angleControlScript.maxValue;
+        float minValue = angleControlScript.minValue;
+        float sliderValue = angleControlScript.getAngleSliderValue ();
+
+        // [parameters of bow_3]
+        // 21 Left  Upper Leg Front-Back  :  [0.5 ~ 0.0]
+        // 29 Right Upper Leg Front-Back  :  [0.5 ~ 0.0]
+        // 0  Spine Front-Back            :  [0.0 ~ -0.5]
+        // ?  Root Q.x                    :  [0.0 ~ 0.3]
+        miraiPose.muscles[(int) Muscles.LeftUpperLegFrontBack] = 0.5f - 0.5f * (sliderValue - minValue) / (maxValue - minValue);
+        miraiPose.muscles[(int) Muscles.RightUpperLegFrontBack] = 0.5f - 0.5f * (sliderValue - minValue) / (maxValue - minValue);
+        miraiPose.muscles[(int) Muscles.SpineFrontBack] = 0.0f - 0.5f * (sliderValue - minValue) / (maxValue - minValue);
+        // TODO: Root Q.x を動かすスクリプトを書く
+    }
+
 }
