@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.InteropServices;
 
 public class Komachi_bow : MonoBehaviour
 {
+  [DllImport("__Internal")]
+  private static extern string[] GetUrlParams(); //パラメータから過去のお辞儀のファイル名を取得してgetしにいく
   GameObject mirai, angleSlider;
   Animator miraiAnimator;
   HumanPose miraiPose;
