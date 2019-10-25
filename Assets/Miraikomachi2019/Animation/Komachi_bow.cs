@@ -123,14 +123,13 @@ public class Komachi_bow : MonoBehaviour
   // Use this for initialization
   void Start()
   {
-
     mirai = GameObject.Find("mirai2019_dance");
     miraiAnimator = mirai.GetComponent<Animator>();
     handler = new HumanPoseHandler(miraiAnimator.avatar, miraiAnimator.transform);
     handler.GetHumanPose(ref miraiPose);
     initZeroPose();
     initUpRightPose();
-    musclesStatus();
+    //musclesStatus();
 
     angleSlider = GameObject.Find("Slider");
     angleControlScript = angleSlider.GetComponent<AngleControl>();
@@ -144,8 +143,9 @@ public class Komachi_bow : MonoBehaviour
     m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
     //Access the Animation clip name
     m_ClipName = m_CurrentClipInfo[0].clip.name;
-    print(m_CurrentClipLength);
+    //print(m_CurrentClipLength);
     timer = (1 / m_CurrentClipLength) / 60;
+    StartCoroutine(GetText("http://example.com"));
   }
 
   // Update is called once per frame
@@ -228,5 +228,20 @@ public class Komachi_bow : MonoBehaviour
     float rot = 130 * (0.0f + 0.3f * sliderValue);
     miraiAnimator.transform.RotateAround(new Vector3(0, 0.8f, 0), new Vector3(1, 0, 0), rot - miraiAnimator.transform.rotation.eulerAngles.x);
   }
+
+//csvとかjsonを読み込むところで使いたい
+  IEnumerator GetText(string url) {
+        WWW request = new WWW(url);
+ 
+        yield return request;
+ 
+        if (!string.IsNullOrEmpty(request.error)) {
+            Debug.Log(request.error);
+        } else {
+            // UTF8文字列として取得する
+            string text = request.text;
+            Debug.Log(text);
+        }
+    }
 
 }
