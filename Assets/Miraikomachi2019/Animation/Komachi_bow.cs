@@ -108,6 +108,14 @@ public class Komachi_bow : MonoBehaviour
     RightLittle2Stretched,
     RightLittle3Stretched
   }
+  private Animator anim;
+  public Slider slider;   //Assign the UI slider of your scene in this slot 
+
+  Animator m_Animator;
+  string m_ClipName;
+  AnimatorClipInfo[] m_CurrentClipInfo;
+  float m_CurrentClipLength;
+  float timer;
 
   // Use this for initialization
   void Start()
@@ -123,14 +131,29 @@ public class Komachi_bow : MonoBehaviour
 
     angleSlider = GameObject.Find("Slider");
     angleControlScript = angleSlider.GetComponent<AngleControl>();
+
+    anim = GetComponent<Animator>();
+    //Get them_Animator, which you attach to the GameObject you intend to animate.
+    m_Animator = gameObject.GetComponent<Animator>();
+    //Fetch the current Animation clip information for the base layer
+    m_CurrentClipInfo = this.m_Animator.GetCurrentAnimatorClipInfo(0);
+    //Access the current length of the clip
+    m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
+    //Access the Animation clip name
+    m_ClipName = m_CurrentClipInfo[0].clip.name;
+    print(m_CurrentClipLength);
+    timer = (1 / m_CurrentClipLength) / 60;
   }
 
   // Update is called once per frame
   void Update()
   {
     // musclesStatus ();
-    getSliderValue();
+    // getSliderValue();
+    float sliderValue = angleControlScript.getAngleSliderNormalizedValue();
     handler.SetHumanPose(ref miraiPose);
+    anim.Play("Komachi_bow", 0, sliderValue);
+    sliderValue += timer;
   }
 
   private void initZeroPose()
@@ -189,21 +212,17 @@ public class Komachi_bow : MonoBehaviour
 
   private void getSliderValue()
   {
-    float maxValue = angleControlScript.maxValue;
-    float minValue = angleControlScript.minValue;
-    float sliderValue = angleControlScript.getAngleSliderValue();
-    float linearValue = (sliderValue - minValue) / (maxValue - minValue);
-
+    float sliderValue = angleControlScript.getAngleSliderNormalizedValue();
     // [parameters of bow_3]
     // 21 Left  Upper Leg Front-Back  :  [0.5 ~ 0.0]
     // 29 Right Upper Leg Front-Back  :  [0.5 ~ 0.0]
     // 0  Spine Front-Back            :  [0.0 ~ -0.5]
     // ?  Root Q.x                    :  [0.0 ~ 0.3]
-    miraiPose.muscles[(int)Muscles.LeftUpperLegFrontBack] = 0.5f - 0.5f * linearValue;
-    miraiPose.muscles[(int)Muscles.RightUpperLegFrontBack] = 0.5f - 0.5f * linearValue;
-    miraiPose.muscles[(int)Muscles.SpineFrontBack] = 0.0f - 0.5f * linearValue;
+    miraiPose.muscles[(int)Muscles.LeftUpperLegFrontBack] = 0.5f - 0.5f * sliderValue;
+    miraiPose.muscles[(int)Muscles.RightUpperLegFrontBack] = 0.5f - 0.5f * sliderValue;
+    miraiPose.muscles[(int)Muscles.SpineFrontBack] = 0.0f - 0.5f * sliderValue;
 
-    float rot = 130 * (0.0f + 0.3f * (sliderValue - minValue) / (maxValue - minValue));
+    float rot = 130 * (0.0f + 0.3f * sliderValue);
     miraiAnimator.transform.RotateAround(new Vector3(0, 0.8f, 0), new Vector3(1, 0, 0), rot - miraiAnimator.transform.rotation.eulerAngles.x);
   }
 

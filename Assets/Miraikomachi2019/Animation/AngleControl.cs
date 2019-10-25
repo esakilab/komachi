@@ -109,25 +109,26 @@ public class AngleControl : MonoBehaviour
     RightLittle2Stretched,
     RightLittle3Stretched
   }
-  public float maxValue = 10f;
-  public float minValue = 0f;
-
   // Use this for initialization
   void Start()
   {
 
     angleSlider = GetComponent<Slider>();
 
-    float value = 0f;
+    float maxValue = 10f;
+    float minValue = 0f;
+    float startValue = 0f;
 
     angleSlider.maxValue = maxValue;
     angleSlider.minValue = minValue;
-    angleSlider.value = value;
+    angleSlider.value = startValue;
 
   }
 
   // Update is called once per frame
-  void Update() { }
+  void Update()
+  {
+  }
 
   public void onValueChanged()
   {
@@ -136,9 +137,9 @@ public class AngleControl : MonoBehaviour
   }
 
   // Sliderの値を渡す
-  public float getAngleSliderValue()
+  public float getAngleSliderNormalizedValue()
   {
-    return angleSlider.value;
+    return angleSlider.normalizedValue;
   }
 
 }

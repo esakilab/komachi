@@ -210,6 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c211d7f935cd95469f513dc84e71a53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slider: {fileID: 0}
 --- !u!4 &225772783
 Transform:
   m_ObjectHideFlags: 0
@@ -458,6 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c211d7f935cd95469f513dc84e71a53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slider: {fileID: 0}
 --- !u!1001 &836080961
 Prefab:
   m_ObjectHideFlags: 0
@@ -583,7 +585,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: e9672178c4116bc478cf5a6bc7c2952b, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: e9672178c4116bc478cf5a6bc7c2952b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1221,5 +1223,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5359a5e24527ac4680ef41fa709fecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxValue: 10
-  minValue: 0
