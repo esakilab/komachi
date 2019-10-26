@@ -13,15 +13,15 @@ mergeInto(LibraryManager.library, {
     console.log("hoge");
     var ws = new WebSocket("ws://localhost:3001");
     console.log(ws);
-    ws.onopen = event => {
+    ws.onopen = function(event) {
       console.log("open: " + event);
     };
 
-    ws.onclose = event => {
+    ws.onclose = function(event) {
       console.log("close: " + event);
     };
 
-    ws.onmessage = event => {
+    ws.onmessage = function(event) {
       console.log("msg: " + event);
       _TestJs2(event);
     };
@@ -31,7 +31,6 @@ mergeInto(LibraryManager.library, {
     url = Pointer_stringify(url);
     id = Pointer_stringify(id);
 
-    // idを渡して、同じidだった場合は要素を生成しないようにしておく
     if (!document.getElementById(id)) {
       var s = document.createElement("script");
       s.setAttribute("src", url);
@@ -39,7 +38,6 @@ mergeInto(LibraryManager.library, {
       document.head.appendChild(s);
     }
   },
-  // 指定したメソッドを実行するための関数例(~.jslib内)
   ExecuteJs: function(id, methodName, jsonData, callbackGameObjectName) {
     id = Pointer_stringify(id);
     methodName = Pointer_stringify(methodName);
@@ -48,7 +46,7 @@ mergeInto(LibraryManager.library, {
 
     var jsonObj = JSON.parse(jsonData);
     jsonObj.Id = id;
-    jsonObj.MethodName = methodName; // メッセージを返してもらうためのGameObject名を渡しておく
+    jsonObj.MethodName = methodName;
     jsonObj.CallbackGameObjectName = callbackGameObjectName;
 
     // PostMessage

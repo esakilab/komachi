@@ -8,11 +8,9 @@ using UnityEngine.Networking;
 public class Komachi_bow : MonoBehaviour
 {
   // #if UNITY_WEBGL && !UNITY_EDITOR
-  // jslibの関数を使う場合に必須
   // [DllImport("__Internal")]
   // private static extern string InjectionJs(string url, string id);
   // [DllImport("__Internal")]
-  // private static extern string[] GetUrlParams(); //パラメータから過去のお辞儀のファイル名を取得してgetしにいく
   [DllImport("__Internal")]
   public static extern string TestJs();
   [DllImport("__Internal")]
@@ -164,11 +162,8 @@ public class Komachi_bow : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    // 各Muscleの値を表示
     // musclesStatus ();
-    // sliderでMuscleを制御
     // getSliderValue();
-    // sliderでAnimationを制御
     // moveAnimationBySlider();
     string rcv_data = TestJsInCs();
     moveAnimationByText(rcv_data);
@@ -199,7 +194,6 @@ public class Komachi_bow : MonoBehaviour
     handler.SetHumanPose(ref miraiPose);
   }
 
-  // 直立のポーズに初期化
   private void initUpRightPose()
   {
     miraiPose.muscles[(int)Muscles.LeftArmDownUp] = -0.6f;
@@ -213,7 +207,6 @@ public class Komachi_bow : MonoBehaviour
     miraiPose.muscles[(int)Muscles.RightLowerLegStretch] = 0.88f;
     miraiPose.muscles[(int)Muscles.RightUpperLegFrontBack] = 0.5f;
     miraiPose.muscles[(int)Muscles.SpineFrontBack] = 0f;
-    // TODO: Root T および Root Q.x の初期化
     handler.SetHumanPose(ref miraiPose);
   }
 
@@ -265,7 +258,6 @@ public class Komachi_bow : MonoBehaviour
     return TestJs();
   }
 
-  //csvとかjsonを読み込むところで使いたい
   IEnumerator GetText(string url)
   {
     using (UnityWebRequest www = UnityWebRequest.Get("http://example.com"))
@@ -284,16 +276,13 @@ public class Komachi_bow : MonoBehaviour
     }
   }
 
-  // 任意のC#クラスから使用するためのpublicな関数
   //   public static void Load(string url, string id)
   //   {
   // #if UNITY_WEBGL && !UNITY_EDITOR
-  //     // 上記DLLImportのメソッド定義と一致させる
   //     InjectionJs(url,id);
   // #endif
   //   }
 
-  //   // 任意のC#クラスから使用するためのpublicな関数
   //   public static void Execute(string id, string methodName, string parameterJson, string callbackGameObjectName)
   //   {
   // #if UNITY_WEBGL && !UNITY_EDITOR
