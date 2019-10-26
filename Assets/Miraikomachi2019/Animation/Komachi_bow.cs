@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
+using UnityEngine.Networking;
 
 public class Komachi_bow : MonoBehaviour
 {
@@ -231,16 +232,19 @@ public class Komachi_bow : MonoBehaviour
 
 //csvとかjsonを読み込むところで使いたい
   IEnumerator GetText(string url) {
-        WWW request = new WWW(url);
- 
-        yield return request;
- 
-        if (!string.IsNullOrEmpty(request.error)) {
-            Debug.Log(request.error);
-        } else {
-            // UTF8文字列として取得する
-            string text = request.text;
-            Debug.Log(text);
+    using (UnityWebRequest www = UnityWebRequest.Get("http://example.com"))
+        {
+            yield return www.Send();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                // Show results as text
+                Debug.Log(www.downloadHandler.text);
+            }
         }
     }
 
