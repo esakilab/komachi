@@ -120,6 +120,9 @@ public class Komachi_bow : MonoBehaviour
   AnimatorClipInfo[] m_CurrentClipInfo;
   float m_CurrentClipLength;
   float timer;
+  [SerializeField]
+  private float huga = 0;
+
 
   // Use this for initialization
   void Start()
@@ -152,12 +155,28 @@ public class Komachi_bow : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
+    // 各Muscleの値を表示
     // musclesStatus ();
+    // sliderでMuscleを制御
     // getSliderValue();
-    float sliderValue = angleControlScript.getAngleSliderNormalizedValue();
+    // sliderでAnimationを制御
+    // moveAnimationBySlider();
+    moveAnimationByText();
+  }
+
+  private void moveAnimationByText()
+  {
+    handler.SetHumanPose(ref miraiPose);
+    anim.Play("Komachi_bow_3", 0, 0.147f + 0.343f * huga);
+    // huga += timer;
+  }
+
+  private void moveAnimationBySlider()
+  {
+    float sliderValue = angleControlScript.getAngleSliderNormalizedValue() * 90 / 146;
     handler.SetHumanPose(ref miraiPose);
     anim.Play("Komachi_bow", 0, sliderValue);
-    sliderValue += timer;
+    // sliderValue += timer;
   }
 
   private void initZeroPose()
@@ -230,22 +249,23 @@ public class Komachi_bow : MonoBehaviour
     miraiAnimator.transform.RotateAround(new Vector3(0, 0.8f, 0), new Vector3(1, 0, 0), rot - miraiAnimator.transform.rotation.eulerAngles.x);
   }
 
-//csvとかjsonを読み込むところで使いたい
-  IEnumerator GetText(string url) {
+  //csvとかjsonを読み込むところで使いたい
+  IEnumerator GetText(string url)
+  {
     using (UnityWebRequest www = UnityWebRequest.Get("http://example.com"))
-        {
-            yield return www.Send();
+    {
+      yield return www.Send();
 
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                Debug.Log(www.downloadHandler.text);
-            }
-        }
+      if (www.isNetworkError || www.isHttpError)
+      {
+        Debug.Log(www.error);
+      }
+      else
+      {
+        // Show results as text
+        Debug.Log(www.downloadHandler.text);
+      }
     }
+  }
 
 }
