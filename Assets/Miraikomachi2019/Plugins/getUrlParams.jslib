@@ -27,30 +27,9 @@ mergeInto(LibraryManager.library, {
     };
   },
 
-  InjectionJs: function(url, id) {
-    url = Pointer_stringify(url);
-    id = Pointer_stringify(id);
-
-    if (!document.getElementById(id)) {
-      var s = document.createElement("script");
-      s.setAttribute("src", url);
-      s.setAttribute("id", id);
-      document.head.appendChild(s);
-    }
-  },
-  ExecuteJs: function(id, methodName, jsonData, callbackGameObjectName) {
-    id = Pointer_stringify(id);
-    methodName = Pointer_stringify(methodName);
-    jsonData = Pointer_stringify(jsonData);
-    callbackGameObjectName = Pointer_stringify(callbackGameObjectName);
-
-    var jsonObj = JSON.parse(jsonData);
-    jsonObj.Id = id;
-    jsonObj.MethodName = methodName;
-    jsonObj.CallbackGameObjectName = callbackGameObjectName;
-
-    // PostMessage
-    var messageString = JSON.stringify(jsonObj);
-    window.postMessage(messageString, "*");
+  ReadAnimationValue: function() {
+    var value = document.getElementById("animationValue").value;
+    console.log(value);
+    return value;
   }
 });
