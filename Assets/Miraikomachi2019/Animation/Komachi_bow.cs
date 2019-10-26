@@ -7,8 +7,17 @@ using UnityEngine.Networking;
 
 public class Komachi_bow : MonoBehaviour
 {
+  // #if UNITY_WEBGL && !UNITY_EDITOR
+  // jslibの関数を使う場合に必須
+  // [DllImport("__Internal")]
+  // private static extern string InjectionJs(string url, string id);
+  // [DllImport("__Internal")]
+  // private static extern string[] GetUrlParams(); //パラメータから過去のお辞儀のファイル名を取得してgetしにいく
   [DllImport("__Internal")]
-  private static extern string[] GetUrlParams(); //パラメータから過去のお辞儀のファイル名を取得してgetしにいく
+  public static extern string TestJs();
+  [DllImport("__Internal")]
+  public static extern string TestJs2();
+  // #endif
   GameObject mirai, angleSlider;
   Animator miraiAnimator;
   HumanPose miraiPose;
@@ -161,13 +170,15 @@ public class Komachi_bow : MonoBehaviour
     // getSliderValue();
     // sliderでAnimationを制御
     // moveAnimationBySlider();
-    moveAnimationByText();
+    string rcv_data = TestJsInCs();
+    moveAnimationByText(rcv_data);
   }
 
-  private void moveAnimationByText()
+  private void moveAnimationByText(string rcv_data)
   {
     handler.SetHumanPose(ref miraiPose);
-    anim.Play("Komachi_bow_3", 0, 0.147f + 0.343f * huga);
+    // anim.Play("Komachi_bow_3", 0, 0.147f + 0.343f * huga);
+    anim.Play("Komachi_bow_3", 0, 0.147f + 0.343f * 0.5f);
     // huga += timer;
   }
 
@@ -249,6 +260,11 @@ public class Komachi_bow : MonoBehaviour
     miraiAnimator.transform.RotateAround(new Vector3(0, 0.8f, 0), new Vector3(1, 0, 0), rot - miraiAnimator.transform.rotation.eulerAngles.x);
   }
 
+  private string TestJsInCs()
+  {
+    return TestJs();
+  }
+
   //csvとかjsonを読み込むところで使いたい
   IEnumerator GetText(string url)
   {
@@ -267,5 +283,22 @@ public class Komachi_bow : MonoBehaviour
       }
     }
   }
+
+  // 任意のC#クラスから使用するためのpublicな関数
+  //   public static void Load(string url, string id)
+  //   {
+  // #if UNITY_WEBGL && !UNITY_EDITOR
+  //     // 上記DLLImportのメソッド定義と一致させる
+  //     InjectionJs(url,id);
+  // #endif
+  //   }
+
+  //   // 任意のC#クラスから使用するためのpublicな関数
+  //   public static void Execute(string id, string methodName, string parameterJson, string callbackGameObjectName)
+  //   {
+  // #if UNITY_WEBGL && !UNITY_EDITOR
+  //     ExecuteJs(id, methodName, parameterJson, callbackGameObjectName);
+  // #endif
+  //   }
 
 }
